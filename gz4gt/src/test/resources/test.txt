@@ -1,0 +1,8 @@
+12	张三
+13	李四
+20	Hadoop
+25	HBase
+30	Hive
+40	Test
+41	test41
+45	test45
