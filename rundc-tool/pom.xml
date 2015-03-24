@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.run</groupId>
-	<artifactId>gz4gt</artifactId>
+	<artifactId>rundc-tool</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
-	<name>gz4gt</name>
+	<name>rundc-tool</name>
 	<organization>
 		<name>xx</name>
 		<url>http://www.xx.com</url>
@@ -15,8 +15,8 @@
 	<properties>
 		<!-- CDH -->
 		<hadoop.version>2.5.0-cdh5.2.0</hadoop.version>
-		<hive.version>0.13.1-cdh5.2.0</hive.version>
 		<!-- COMMON -->
+		<jdom.version>2.0.1</jdom.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
 		<junit.version>4.11</junit.version>
@@ -34,6 +34,7 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 			<version>${hadoop.version}</version>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>
@@ -45,38 +46,30 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- hive -->
+		<!-- common -->
 		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-common</artifactId>
-			<version>${hive.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>${hive.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.hive</groupId>
-					<artifactId>hive-exec</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>${jdom.version}</version>
 		</dependency>
 		<!-- logger -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- test -->
 		<dependency>
