@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
+<!-- @author: yanhong@bjrun.com -->
+
+<configuration>
+
+	<property>
+		<name>mapred.reduce.tasks</name>
+		<value>1</value>
+	</property>
+
+	<property>
+		<name>mapreduce.inputformat.class</name>
+		<value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
+		</value>
+		<description>SequenceFileInputFormat|TextInputFormat</description>
+	</property>
+
+	<property>
+		<name>mapreduce.outputformat.class</name>
+		<value>org.apache.hadoop.mapreduce.lib.output.TextOutputFormat</value>
+		<description>SequenceFileOutputFormat|TextOutputFormat</description>
+	</property>
+
+	<property>
+		<name>mapred.output.compress</name>
+		<value>false</value>
+	</property>
+
+	<property>
+		<name>mapred.output.compression.type</name>
+		<value>BLOCK</value>
+	</property>
+
+	<property>
+		<name>mapred.output.compression.codec</name>
+		<value>com.hadoop.compression.lzo.LzoCodec</value>
+	</property>
+
+	<property>
+		<name>mapred.compress.map.output</name>
+		<value>true</value>
+	</property>
+
+	<property>
+		<name>mapred.map.output.compression.codec</name>
+		<value>com.hadoop.compression.lzo.LzoCodec</value>
+	</property>
+
+</configuration>

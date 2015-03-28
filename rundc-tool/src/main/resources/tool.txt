@@ -1,0 +1,12 @@
+
+#)BcpExpMR
+hadoop jar rundc-tool-*.jar bcp.exp /flume/20150321 /bcpexp/20150321
+hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im /flume/20150321 /bcpexp/20150321
+hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=360 -Dgroups=20150319-20150331 /flume/20150321 /bcpexp/20150321
+hdfs dfs -ls /bcpexp/20150321
+
+#)BcpCountMR
+hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im /flume/20150321 /bcpcount/20150321
+hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im -Dfields=protocol_id,@date /flume/20150321 /bcpcount/20150321
+hdfs dfs -cat /bcpcount/20150321/part-r-*
+
