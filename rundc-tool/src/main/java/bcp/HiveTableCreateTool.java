@@ -256,7 +256,16 @@ public class HiveTableCreateTool extends Configured implements Tool {
 				} else if ("date".equalsIgnoreCase(type)) {
 					hcol.type = "bigint";
 				} else if ("int".equalsIgnoreCase(type)) { // 非法配置
-					hcol.type = "int";
+					String s = ec.getAttributeValue("len");
+					if (s != null && Integer.parseInt(s) > 9) {
+						hcol.type = "bigint";
+					} else {
+						hcol.type = "int";
+					}
+					log.warn("Unsuggested hive column type mapping: " + key
+							+ "# " + hcol.name + "/" + type);
+				}  else if ("long".equalsIgnoreCase(type)) { // 非法配置
+					hcol.type = "bigint";
 					log.warn("Unsuggested hive column type mapping: " + key
 							+ "# " + hcol.name + "/" + type);
 				} else if ("double".equalsIgnoreCase(type)) { // 非法配置

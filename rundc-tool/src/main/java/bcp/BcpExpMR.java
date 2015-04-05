@@ -36,6 +36,7 @@ import bcp.conf.BcpRecordParser;
  * 参数: <br/>
  * -Dbcps=im,game -指定要提取的bcp，以逗号分隔。默认全部协议<br/>
  * -Dgroups=20150321 -指定分组日期列表，以逗号分隔。未指定时不按日期分组输出<br/>
+ * -Dgroup.type=day -指定分区粒度[day, hour]<br/>
  * 
  * @author yhli
  * 
@@ -104,22 +105,33 @@ public class BcpExpMR extends RunTool {
 
 	public static Map<String, String> getGroupNames(Configuration conf,
 			String bcp) throws IOException {
+		SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat df2;
+		int field;
+		String type = conf.get("group.type", "day");
+		if ("hour".equalsIgnoreCase(type)) {
+			field = Calendar.HOUR;
+			df2 = new SimpleDateFormat("yyyyMMddHH");
+		} else {
+			field = Calendar.DATE;
+			df2 = df1;
+		}
+
 		Collection<String> groups = conf.getStringCollection("groups");
 		try {
-			SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 			Map<String, String> groupMap = new HashMap<String, String>();
 			for (String str : groups) {
 				str = str.trim();
 				String[] arr = str.split("-");
 				if (arr.length == 2) {
-					Date d1 = df.parse(arr[0].trim());
-					Date d2 = df.parse(arr[1].trim());
+					Date d1 = df1.parse(arr[0].trim());
+					Date d2 = df1.parse(arr[1].trim());
 					Calendar cdar = Calendar.getInstance();
 					cdar.setTime(d1);
 					while (true) {
-						String sd = df.format(cdar.getTime());
+						String sd = df2.format(cdar.getTime());
 						groupMap.put(sd, getNamedOutput(conf, bcp, sd));
-						cdar.add(Calendar.DATE, 1);
+						cdar.add(field, 1);
 						if (cdar.getTime().after(d2)) {
 							break;
 						}
@@ -250,7 +262,7 @@ public class BcpExpMR extends RunTool {
 
 		protected int colIdxDate;
 
-		protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		protected SimpleDateFormat df;
 		protected Map<String, String> groupNames = new HashMap<String, String>();
 		protected String groupNameDefault;
 
@@ -263,6 +275,13 @@ public class BcpExpMR extends RunTool {
 			String bcp = getBcpName();
 			groupNames = getGroupNames(conf, bcp);
 			groupNameDefault = groupNames.get("default");
+
+			String type = conf.get("group.type", "day");
+			if ("hour".equalsIgnoreCase(type)) {
+				df = new SimpleDateFormat("yyyyMMddHH");
+			} else {
+				df = new SimpleDateFormat("yyyyMMdd");
+			}
 		}
 
 		public String groupValue() throws IOException {
