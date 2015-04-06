@@ -62,17 +62,9 @@
 			<artifactId>dom4j</artifactId>
 			<version>${dom4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>ant-contrib</groupId>
-			<artifactId>ant-contrib</artifactId>
-			<version>1.0b3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>ant</groupId>
-					<artifactId>ant</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- <dependency> <groupId>ant-contrib</groupId> <artifactId>ant-contrib</artifactId> 
+			<version>1.0b3</version> <exclusions> <exclusion> <groupId>ant</groupId> 
+			<artifactId>ant</artifactId> </exclusion> </exclusions> </dependency> -->
 		<!-- logger -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

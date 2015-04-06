@@ -3,38 +3,6 @@
 <project name="ayena-objectpp" default="package">
 	<target name="package" depends="clean, compile, compile-test, jar, jar-pb" />
 
-	<target name="init">
-		<property file="build.properties" />
-		<tstamp>
-			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
-		</tstamp>
-		<property name="root.dir" value="${basedir}" />
-		<property name="build.dir" value="${root.dir}/target" />
-
-		<path id="thirdpath">
-			<fileset dir="${root.dir}/lib">
-				<include name="**/*.jar" />
-				<include name="**/*.zip" />
-				<exclude name="**/ant-*.jar" />
-			</fileset>
-		</path>
-
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<fileset dir="${root.dir}/lib">
-					<include name="ant-contrib-*.jar" />
-				</fileset>
-			</classpath>
-		</taskdef>
-		<echo message="project.name = ${ant.project.name}" />
-		<echo message="ant.version = ${ant.home}, ${ant.version}" />
-		<echo message="ant.java.version = ${ant.java.version}" />
-		<echo message="build.user = ${build.user}" />
-		<echo message="build.version = ${build.version}" />
-		<echo message="build.time = ${build.time}" />
-		<echo message="root.dir = ${root.dir}" />
-	</target>
-
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}" includeemptydirs="true" quiet="true" />
 	</target>
@@ -114,6 +82,41 @@
 				</section>
 			</manifest>
 		</jar>
+	</target>
+
+	<target name="init">
+		<property file="build.properties" />
+		<property name="root.dir" value="${basedir}" />
+		<property name="build.dir" value="${root.dir}/target" />
+
+		<path id="thirdpath">
+			<fileset dir="${root.dir}">
+				<include name="lib/**/*.jar" />
+				<include name="lib/**/*.zip" />
+			</fileset>
+		</path>
+
+		<tstamp>
+			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<fileset dir="${root.dir}">
+					<include name="tool/libext/ant-contrib-*.jar" />
+				</fileset>
+				<fileset dir="${ant.home}">
+					<include name="libext/ant-contrib-*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		<echo message="project.name = ${ant.project.name}" />
+		<echo message="ant.version = ${ant.home}, ${ant.version}" />
+		<echo message="ant.java.version = ${ant.java.version}" />
+		<echo message="build.user = ${build.user}" />
+		<echo message="build.version = ${build.version}" />
+		<echo message="build.time = ${build.time}" />
+		<echo message="root.dir = ${root.dir}" />
 	</target>
 
 	<macrodef name="protoc">
