@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @author: Yanhong Lee -->
+<project name="ayena-objectpp" default="package">
+	<target name="package" depends="clean, compile, compile-test, jar, jar-pb" />
+
+	<target name="init">
+		<property file="build.properties" />
+		<tstamp>
+			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+		<property name="root.dir" value="${basedir}" />
+		<property name="build.dir" value="${root.dir}/target" />
+
+		<path id="thirdpath">
+			<fileset dir="${root.dir}/lib">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+				<exclude name="**/ant-*.jar" />
+			</fileset>
+		</path>
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<fileset dir="${root.dir}/lib">
+					<include name="ant-contrib-*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		<echo message="project.name = ${ant.project.name}" />
+		<echo message="ant.version = ${ant.home}, ${ant.version}" />
+		<echo message="ant.java.version = ${ant.java.version}" />
+		<echo message="build.user = ${build.user}" />
+		<echo message="build.version = ${build.version}" />
+		<echo message="build.time = ${build.time}" />
+		<echo message="root.dir = ${root.dir}" />
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}" includeemptydirs="true" quiet="true" />
+	</target>
+
+	<target name="compile-pb" depends="init">
+		<protoc />
+		<mkdir dir="${build.dir}/classes" />
+		<javac destdir="${build.dir}/classes" srcdir="${build.dir}/gen-java" debug="on" optimize="yes" encoding="UTF-8" includeantruntime="false">
+			<classpath>
+				<path refid="thirdpath" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="compile" depends="compile-pb">
+		<mkdir dir="${build.dir}/classes" />
+		<javac destdir="${build.dir}/classes" srcdir="${root.dir}/src/main/java" debug="on" optimize="yes" encoding="UTF-8" includeantruntime="false">
+			<classpath>
+				<path refid="thirdpath" />
+				<path location="${build.dir}/classes" />
+			</classpath>
+		</javac>
+		<copy todir="${build.dir}/classes">
+			<fileset dir="${root.dir}/src/main/resources">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile-test" depends="init">
+		<mkdir dir="${build.dir}/test-classes" />
+		<javac destdir="${build.dir}/test-classes" srcdir="${root.dir}/src/test/java" debug="on" optimize="yes" encoding="UTF-8" includeantruntime="false">
+			<classpath>
+				<path refid="thirdpath" />
+				<path location="${build.dir}/classes" />
+			</classpath>
+		</javac>
+		<copy todir="${build.dir}/test-classes">
+			<fileset dir="${root.dir}/src/test/resources">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="init">
+		<mkdir dir="${build.dir}" />
+		<jar jarfile="${build.dir}/${ant.project.name}.jar">
+			<fileset dir="${root.dir}">
+				<include name="lib/dom4j-*.jar" />
+			</fileset>
+			<fileset dir="${build.dir}/classes" includes="**" />
+			<manifest>
+				<attribute name="Main-Class" value="com.run.ayena.objectpp.util.HadoopAppDriver" />
+				<section name="build">
+					<attribute name="Implementation-Title" value="${ant.project.name}" />
+					<attribute name="Implementation-Version" value="${build.version}" />
+					<attribute name="buildDate" value="${build.time}" />
+					<attribute name="buildUser" value="${build.user}" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jar-pb" depends="init">
+		<mkdir dir="${build.dir}" />
+		<jar jarfile="${build.dir}/${ant.project.name}-pb.jar">
+			<fileset dir="${root.dir}/target/classes">
+				<include name="pb/**/*" />
+			</fileset>
+			<fileset dir="${root.dir}/src/main">
+				<include name="proto/**" />
+			</fileset>
+			<manifest>
+				<section name="build">
+					<attribute name="Implementation-Title" value="${ant.project.name}" />
+					<attribute name="Implementation-Version" value="${build.version}" />
+					<attribute name="buildDate" value="${build.time}" />
+					<attribute name="buildUser" value="${build.user}" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<macrodef name="protoc">
+		<attribute name="proto.dir" default="${root.dir}/src/main/proto" />
+		<attribute name="java.out" default="${root.dir}/target/gen-java" />
+		<sequential>
+			<echo message="compile-protoc..." />
+			<path id="proto.path">
+				<fileset dir="@{proto.dir}">
+					<include name="**/*.proto" />
+				</fileset>
+			</path>
+			<pathconvert pathsep=" " property="proto.files" refid="proto.path" />
+			<mkdir dir="@{java.out}" />
+			<property environment="env" />
+			<if>
+				<os family="windows" />
+				<then>
+					<exec executable="${root.dir}/tool/windows/protoc.exe">
+						<arg value="--version" />
+					</exec>
+					<exec executable="${root.dir}/tool/windows/protoc.exe">
+						<arg value="--java_out=@{java.out}" />
+						<arg value="-I@{proto.dir}" />
+						<arg line="${proto.files}" />
+					</exec>
+				</then>
+				<else>
+					<exec executable="${root.dir}/tool/linux/protoc">
+						<arg value="--version" />
+					</exec>
+					<exec executable="${root.dir}/tool/linux/protoc">
+						<arg value="--java_out=@{java.out}" />
+						<arg value="-I@{proto.dir}" />
+						<arg line="${proto.files}" />
+					</exec>
+				</else>
+			</if>
+			<echo message="compile-protoc OK" />
+		</sequential>
+	</macrodef>
+
+</project>

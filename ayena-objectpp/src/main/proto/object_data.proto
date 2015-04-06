@@ -1,0 +1,76 @@
+// @author Yanhong Lee
+// @date 2015-04-05 init 
+package pb.ayena;
+option java_package = "pb.ayena";
+
+//对象标识(由对象多个不同属性组成，最多支持10个)
+message ObjectId {
+	optional string id1 = 1;
+	optional string id2 = 2;
+	optional string id3 = 3;
+	optional string id4 = 4;
+	optional string id5 = 5;
+	optional string id6 = 6;
+	optional string id7 = 7;
+	optional string id8 = 8;
+	optional string id9 = 9;
+	optional string id10 = 10;
+	optional string id11 = 11;
+	optional string id12 = 12;
+	optional string id13 = 13;
+	optional string dataset = 14; //数据集名称
+	optional string namespace = 15; //数据集所属命名空间
+}
+
+//对象维度(由对象多个不同属性组成，最多支持15个)
+message ObjectDimension {
+	optional string dim1 = 1;
+	optional string dim2 = 2;
+	optional string dim3 = 3;
+	optional string dim4 = 4;
+	optional string dim5 = 5;
+	optional string dim6 = 6;
+	optional string dim7 = 7;
+	optional string dim8 = 8;
+	optional string dim9 = 9;
+	optional string dim10 = 10;
+	optional string dim11 = 11;
+	optional string dim12 = 12;
+	optional string dim13 = 13;
+	optional string dim14 = 14;
+	optional string dim15 = 15;
+}
+
+//对象或属性值统计
+message ObjectCounter {
+	optional string value = 1; //属性值(仅当为对象属性值统计时有效)
+	optional uint32 count = 3; //发现次数
+	optional uint32 day_count = 4; //发现天数
+	optional uint32 first_time = 5; //首次时间
+	optional uint32 last_time = 6; //末次时间
+	repeated uint32 days = 8 [packed=true]; //日期列表，用于统计天数
+}
+
+//对象追溯属性
+message ObjectAttr {
+	optional string code = 1; //属性内部编码
+	repeated ObjectCounter counters = 3; //各属性值统计
+}
+
+//存储对象追溯数据
+message ObjectBase {
+	optional ObjectId oid = 1; //对象标识
+	optional ObjectDimension dim = 2; //对象维度
+	optional uint32 capture_time = 3; //截获时间
+	optional ObjectCounter counter = 4; //对象统计
+	repeated ObjectAttr props = 5; //对象属性列表
+	optional uint32 status = 15; //存储状态标识: 0-未变更; 1-已更新
+}
+
+//存储对象档案数据
+message ObjectInfo {
+	optional ObjectId oid = 1; //对象标识
+	optional uint32 capture_time = 3; //截获时间
+	optional ObjectCounter counter = 4; //对象统计
+	repeated ObjectAttr props = 5; //对象属性列表
+}
