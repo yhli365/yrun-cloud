@@ -1,12 +1,26 @@
 
-#)BcpExpMR
-hadoop jar rundc-tool-*.jar bcp.exp /flume/20150321 /bcpexp/20150321
-hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im /flume/20150321 /bcpexp/20150321
-hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=360 -Dgroups=20150319-20150331 /flume/20150321 /bcpexp/20150321
-hdfs dfs -ls /bcpexp/20150321
-
 #)BcpCountMR
 hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im /flume/20150321 /bcpcount/20150321
 hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im -Dfields=protocol_id,@date /flume/20150321 /bcpcount/20150321
 hdfs dfs -cat /bcpcount/20150321/part-r-*
+
+#)BcpExpMR
+#按协议分区
+hadoop jar rundc-tool-*.jar bcp.exp /flume/20150321 /bcpexp/20150321
+
+#按协议及天分区
+hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im /flume/20150321 /bcpexp/20150321
+hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=m20150321 -Dgroups=20150301-20150331 /flume/20150321 /bcpexp/20150321
+
+#按协议及小时分区
+hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=m20150325 -Dgroups=20150301-20150331 -Dgroup.type=hour /flume1/20150325 /bcpexp1/20150325
+hdfs dfs -ls /bcpexp1/20150325
+
+#)HiveTableDataTool
+#加载BcpExpMR导出的分区数据
+hadoop jar rundc-tool-*.jar hive.data -Dbcps=im -Dgroup.type=hour -loadBcp /bcpexp1/20150325 /jz
+hdfs dfs -ls /jz/im/*
+
+#加载Flume上传的按小时分区数据
+hadoop jar rundc-tool-*.jar hive.data -Dbcp=im -loadFlumeBcp /flume1/20150328 /jz
 
