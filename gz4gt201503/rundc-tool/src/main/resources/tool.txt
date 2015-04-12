@@ -1,26 +1,35 @@
 
+#)HiveTableCreateTool
+hadoop jar rundc-tool-*.jar hive.create -Dbcps=im target/im.sql
+hadoop jar rundc-tool-*.jar hive.create \
+	-Dbcps=identitynetinfo \
+	-Dcolumn.bcpid=NULL \
+	-Dstored.as=textfile \
+	-Dpartitioned.by=NULL \
+	target/identitynetinfo.sql
+
 #)BcpCountMR
 hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im /flume/20150321 /bcpcount/20150321
 hadoop jar rundc-tool-*.jar bcp.count -Dbcp=im -Dfields=protocol_id,@date /flume/20150321 /bcpcount/20150321
 hdfs dfs -cat /bcpcount/20150321/part-r-*
 
 #)BcpExpMR
-#°´Ğ­Òé·ÖÇø
+#æŒ‰åè®®åˆ†åŒº
 hadoop jar rundc-tool-*.jar bcp.exp /flume/20150321 /bcpexp/20150321
 
-#°´Ğ­Òé¼°Ìì·ÖÇø
+#æŒ‰åè®®åŠå¤©åˆ†åŒº
 hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im /flume/20150321 /bcpexp/20150321
 hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=m20150321 -Dgroups=20150301-20150331 /flume/20150321 /bcpexp/20150321
 
-#°´Ğ­Òé¼°Ğ¡Ê±·ÖÇø
+#æŒ‰åè®®åŠå°æ—¶åˆ†åŒº
 hadoop jar rundc-tool-*.jar bcp.exp -Dbcps=im -Did=m20150325 -Dgroups=20150301-20150331 -Dgroup.type=hour /flume1/20150325 /bcpexp1/20150325
 hdfs dfs -ls /bcpexp1/20150325
 
 #)HiveTableDataTool
-#¼ÓÔØBcpExpMRµ¼³öµÄ·ÖÇøÊı¾İ
+#åŠ è½½BcpExpMRå¯¼å‡ºçš„åˆ†åŒºæ•°æ®
 hadoop jar rundc-tool-*.jar hive.data -Dbcps=im -Dgroup.type=hour -loadBcp /bcpexp1/20150325 /jz
 hdfs dfs -ls /jz/im/*
 
-#¼ÓÔØFlumeÉÏ´«µÄ°´Ğ¡Ê±·ÖÇøÊı¾İ
+#åŠ è½½Flumeä¸Šä¼ çš„æŒ‰å°æ—¶åˆ†åŒºæ•°æ®
 hadoop jar rundc-tool-*.jar hive.data -Dbcp=im -loadFlumeBcp /flume1/20150328 /jz
 
